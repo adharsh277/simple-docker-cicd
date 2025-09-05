@@ -1,0 +1,21 @@
+stages:
+  - build
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+build-docker-image:
+  stage: build
+  image: docker:24.0.5   # Docker-in-Docker image
+  services:
+    - docker:24.0.5-dind  # Needed for Docker-in-Docker
+  before_script:
+    - docker info  # Optional, check Docker is running
+  script:
+    - docker build -t simple-docker-cicd .
+  only:
+    refs:
+      - main
+    changes:
+      - Dockerfile
+      - '**/*.yml'
